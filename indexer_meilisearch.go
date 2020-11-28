@@ -4,10 +4,12 @@ import (
 	json2 "encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 	"syscall"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/meilisearch/meilisearch-go"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -19,6 +21,10 @@ type MeiliSearch struct {
 	host, APIKey, indexUID string
 	APIKeyRequired         bool
 }
+
+// totalSentencesToIndexByRow define the total of sentences
+// to index each bulk.
+const totalSentencesToIndexByRow = 10000
 
 // Init the MeiliSearch client and the index.
 func (m *MeiliSearch) Init() {
@@ -104,8 +110,14 @@ func (m MeiliSearch) Index(sentences map[string]Sentence) {
 		// Add the sentence interface to documents to index.
 		documents = append(documents, sentenceInterface)
 
-		// Call the API to add the sentences every 10000 sentences.
-		if len(documents) == 10000 || i == totalSentences {
+		// Call the API to add the sentences.
+		if len(documents) == totalSentencesToIndexByRow || i == totalSentences {
+			// Check if the client still working.
+			if err := m.client.Health().Get(); err != nil {
+				color.Red("\nThe server isn't responding anymore... Can't index sentences...")
+				os.Exit(0)
+			}
+
 			// Add documents.
 			addResponse, err := index.AddOrReplace(documents)
 
