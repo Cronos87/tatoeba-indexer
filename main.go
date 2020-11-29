@@ -1,10 +1,11 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"os"
 
 	"github.com/fatih/color"
+	"github.com/integrii/flaggy"
 )
 
 // Sentence describe the fields to index.
@@ -21,18 +22,50 @@ type Sentence struct {
 	HasAudio            bool     `json:"has_audio"`
 }
 
-func main() {
+// Declare CLI arguments variables and their defaults.
+
+// MeiliSearch variables.
+var isAPIKeyRequired = false
+var host = "127.0.0.1:7700"
+
+// parseCLIArguments will parse CLI arguments and populate
+// the variables.
+func parseCLIArguments() {
+	// Create the subcommand for MeiliSearch.
+	meiliSearchSubcommand := flaggy.NewSubcommand("meilisearch")
+	meiliSearchSubcommand.Description = "Index sentences in MeiliSearch (https://www.meilisearch.com)"
+
 	// Declare arguments need to provide as CLI arguments.
-	isAPIKeyRequired := flag.Bool("api-key", false, "will ask you to enter the API key")
-	host := flag.String("host", "127.0.0.1:7700", "host url")
+	meiliSearchSubcommand.Bool(&isAPIKeyRequired, "", "api-key", "will ask you to enter the API key")
+	meiliSearchSubcommand.String(&host, "", "host", "host url")
+
+	// Add the subcommands to the parser.
+	flaggy.AttachSubcommand(meiliSearchSubcommand, 1)
 
 	// Parse CLI arguments.
-	flag.Parse()
+	flaggy.Parse()
+}
 
-	// Create an instance of MeiliSearch.
-	client := MeiliSearch{
-		host:           *host,
-		APIKeyRequired: *isAPIKeyRequired,
+func main() {
+	// Parse CLI arguments.
+	parseCLIArguments()
+
+	// Declare the client.
+	var client Indexer
+
+	// If no subcommand was specified, show help and exit.
+	if len(os.Args) == 1 {
+		flaggy.ShowHelpAndExit("")
+	}
+
+	// Create the client depending of the user choice.
+	switch os.Args[1] {
+	case "meilisearch":
+		// Create an instance of MeiliSearch.
+		client = &MeiliSearch{
+			host:           host,
+			APIKeyRequired: isAPIKeyRequired,
+		}
 	}
 
 	// Init the MeiliSearch client.
