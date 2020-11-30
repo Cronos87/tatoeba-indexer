@@ -40,3 +40,4 @@ In case it's on a remote server, you can specify the host passing the parameter 
 
 * Add tests
 * Add tags
+* Some sentences are not indexed on MeiliSearch, find what's happening
