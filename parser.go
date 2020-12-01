@@ -116,19 +116,10 @@ func ParseSentencesLink(sentences *map[string]Sentence) {
 			fromSentence.DirectRelations = append(fromSentence.DirectRelations, toSentence.ID)
 
 			// Add the translated language if not present in the array.
-			languageExist := false
-
-			// Loop over the translated languages array to find if the
-			// language already exist.
-			for _, language := range fromSentence.TranslatedLanguages {
-				if language == toSentence.Language {
-					languageExist = true
-					break
-				}
-			}
+			languageExists := languageExists(toSentence.Language, fromSentence.TranslatedLanguages)
 
 			// Add the language if not exist.
-			if !languageExist {
+			if !languageExists {
 				fromSentence.TranslatedLanguages = append(fromSentence.TranslatedLanguages, toSentence.Language)
 			}
 
@@ -174,21 +165,14 @@ func FindIndirectRelations(sentences *map[string]Sentence) {
 				// Add the direct direct relation to the indirect relation.
 				sentence.IndirectRelations = append(sentence.IndirectRelations, directDirectSentenceID)
 
-				// Add the language in translated languages if haven't.
-				languageFound := false
-
 				// Get the direct direct sentence.
 				directDirectSentence := (*sentences)[strconv.Itoa(int(directDirectSentenceID))]
 
-				for _, language := range sentence.TranslatedLanguages {
-					if language == directDirectSentence.Language {
-						languageFound = true
-						break
-					}
-				}
+				// Add the language in translated languages if haven't.
+				languageExists := languageExists(directDirectSentence.Language, sentence.TranslatedLanguages)
 
 				// Add the language if not founded.
-				if !languageFound {
+				if !languageExists {
 					sentence.TranslatedLanguages = append(sentence.TranslatedLanguages, directDirectSentence.Language)
 				}
 			}
@@ -219,4 +203,17 @@ func ParseSentencesWithAudio(sentences *map[string]Sentence) {
 		sentence.HasAudio = true
 		(*sentences)[line[0]] = sentence
 	}
+}
+
+// languageExists check if the given language exists in the array of languages.
+func languageExists(languageToFind string, languages []string) bool {
+	// Loop over the translated languages array to find if the
+	// language already exist.
+	for _, language := range languages {
+		if language == languageToFind {
+			return true
+		}
+	}
+
+	return false
 }
