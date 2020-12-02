@@ -31,10 +31,10 @@ tar xjf sentences_detailed.tar.bz2 && tar xjf links.tar.bz2 && tar xjf sentences
 If you have an instance of MeiliSearch running on your local, simple run:
 
 ```bash
-go run .
+go run . meilisearch
 ```
 
-In case it's on a remote server, you can specify the host passing the parameter `-host`.
+In case it's on a remote server, you can specify the host passing the parameter `--host`.
 
 ## Roadmap
 
