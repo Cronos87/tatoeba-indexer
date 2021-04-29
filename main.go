@@ -22,25 +22,42 @@ type Sentence struct {
 	HasAudio            bool     `json:"has_audio"`
 }
 
+// Declare the engines name.
+const (
+	meilisearchName   = "meilisearch"
+	elasticsearchName = "elasticsearch"
+)
+
 // Declare CLI arguments variables and their defaults.
 
 // MeiliSearch variables.
 var isAPIKeyRequired = false
-var host = "127.0.0.1:7700"
+var hostMeiliSearch = "127.0.0.1:7700"
+
+// Elasticsearch variables.
+var hostElasticsearch = "127.0.0.1:9200"
 
 // parseCLIArguments will parse CLI arguments and populate
 // the variables.
 func parseCLIArguments() {
 	// Create the subcommand for MeiliSearch.
-	meiliSearchSubcommand := flaggy.NewSubcommand("meilisearch")
+	meiliSearchSubcommand := flaggy.NewSubcommand(meilisearchName)
 	meiliSearchSubcommand.Description = "Index sentences in MeiliSearch (https://www.meilisearch.com)"
 
 	// Declare arguments need to provide as CLI arguments.
 	meiliSearchSubcommand.Bool(&isAPIKeyRequired, "", "api-key", "will ask you to enter the API key")
-	meiliSearchSubcommand.String(&host, "", "host", "host url")
+	meiliSearchSubcommand.String(&hostMeiliSearch, "", "host", "host url")
+
+	// Create the subcommand for Elasticsearch.
+	elasticsearchSubcommand := flaggy.NewSubcommand(elasticsearchName)
+	elasticsearchSubcommand.Description = "Index sentences in Elasticsearch (https://www.elastic.co/fr/elasticsearch/)"
+
+	// Declare arguments need to provide as CLI arguments.
+	elasticsearchSubcommand.String(&hostElasticsearch, "", "host", "host url")
 
 	// Add the subcommands to the parser.
 	flaggy.AttachSubcommand(meiliSearchSubcommand, 1)
+	flaggy.AttachSubcommand(elasticsearchSubcommand, 1)
 
 	// Parse CLI arguments.
 	flaggy.Parse()
@@ -50,21 +67,26 @@ func main() {
 	// Parse CLI arguments.
 	parseCLIArguments()
 
-	// Declare the client.
-	var client Indexer
-
 	// If no subcommand was specified, show help and exit.
 	if len(os.Args) == 1 {
 		flaggy.ShowHelpAndExit("")
 	}
 
+	// Declare the client.
+	var client Indexer
+
 	// Create the client depending of the user choice.
 	switch os.Args[1] {
-	case "meilisearch":
+	case meilisearchName:
 		// Create an instance of MeiliSearch.
 		client = &MeiliSearch{
-			host:           host,
+			host:           hostMeiliSearch,
 			APIKeyRequired: isAPIKeyRequired,
+		}
+	case elasticsearchName:
+		// Create an instance of Elasticsearch.
+		client = &Elasticsearch{
+			host: hostElasticsearch,
 		}
 	}
 
@@ -93,4 +115,6 @@ func main() {
 
 	// Index sentences.
 	client.Index(sentences)
+
+	fmt.Println()
 }
