@@ -8,20 +8,6 @@ import (
 	"github.com/integrii/flaggy"
 )
 
-// Sentence describe the fields to index.
-type Sentence struct {
-	ID                  int32    `json:"id"`
-	Language            string   `json:"language"`
-	Content             string   `json:"content"`
-	Username            string   `json:"username"`
-	AddedAt             string   `json:"added_at"`
-	UpdatedAt           string   `json:"updated_at"`
-	DirectRelations     []int32  `json:"direct_translations"`
-	IndirectRelations   []int32  `json:"indirect_translations"`
-	TranslatedLanguages []string `json:"translated_languages"`
-	HasAudio            bool     `json:"has_audio"`
-}
-
 // Declare the engines name.
 const (
 	meilisearchName   = "meilisearch"
