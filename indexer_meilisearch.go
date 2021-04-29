@@ -59,6 +59,9 @@ func (m *MeiliSearch) Init() {
 
 	// Set the searchable attributes.
 	m.setSearchableAttributes()
+
+	// Print the current instance.
+	fmt.Printf("Indexing on MeiliSearch on the host \"%s\".\n", host)
 }
 
 // createIndex will create the Tatoeba index for Meilisearch.
@@ -150,8 +153,6 @@ func (m MeiliSearch) Index(sentences map[string]Sentence) {
 		// Increment the counter.
 		i++
 	}
-
-	fmt.Println()
 }
 
 // askAPIKey will prompt in terminal to enter the API key.
