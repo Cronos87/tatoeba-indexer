@@ -60,8 +60,8 @@ func parseCLIArguments() {
 
 	// Check if the number of workers is not exceeded.
 	if numWorkers > runtime.NumCPU() {
-		color.Red(fmt.Sprintf("You defined %d workers, but you can't define more than %d workers.", numWorkers, runtime.NumCPU()))
-		os.Exit(0)
+		color.Cyan(fmt.Sprintf("You can't define more than %d workers. The value has been changed with the maximum one.", runtime.NumCPU()))
+		numWorkers = runtime.NumCPU()
 	}
 }
 
