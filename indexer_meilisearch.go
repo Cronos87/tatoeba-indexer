@@ -11,7 +11,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/meilisearch/meilisearch-go"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 // MeiliSearch will index the sentences
@@ -161,7 +161,7 @@ func (m *MeiliSearch) askAPIKey() {
 	fmt.Print("Please enter the API key: ")
 
 	// Ask the user to enter the API key from the terminal.
-	APIKey, err := terminal.ReadPassword(int(syscall.Stdin))
+	APIKey, err := term.ReadPassword(int(syscall.Stdin))
 
 	if err != nil {
 		log.Fatal(err)
