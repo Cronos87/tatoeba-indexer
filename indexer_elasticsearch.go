@@ -17,9 +17,10 @@ import (
 // Elasticsearch will index the sentences
 // on a given Elasticsearch instance.
 type Elasticsearch struct {
-	client      *elasticsearch.Client
-	bulkIndexer esutil.BulkIndexer
-	host        string
+	client                 *elasticsearch.Client
+	bulkIndexer            esutil.BulkIndexer
+	host                   string
+	numWorkers, flushBytes int
 }
 
 // Init the MeiliSearch client.
@@ -81,8 +82,8 @@ func (e *Elasticsearch) Init() {
 	e.bulkIndexer, err = esutil.NewBulkIndexer(esutil.BulkIndexerConfig{
 		Index:         IndexName,
 		Client:        e.client,
-		NumWorkers:    8,            // @TODO: Set this with a CLI variable.
-		FlushBytes:    int(1000000), // @TODO: Set this with a CLI variable.
+		NumWorkers:    e.numWorkers,
+		FlushBytes:    e.flushBytes,
 		FlushInterval: 30 * time.Second,
 	})
 
