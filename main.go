@@ -15,6 +15,7 @@ const (
 )
 
 // Declare CLI arguments variables and their defaults.
+var IndexName = "tatoeba"
 
 // MeiliSearch variables.
 var isAPIKeyRequired = false
@@ -26,9 +27,12 @@ var hostElasticsearch = "127.0.0.1:9200"
 // parseCLIArguments will parse CLI arguments and populate
 // the variables.
 func parseCLIArguments() {
+	// Create the global command.
+	flaggy.String(&IndexName, "i", "index", "index name")
+
 	// Create the subcommand for MeiliSearch.
 	meiliSearchSubcommand := flaggy.NewSubcommand(meilisearchName)
-	meiliSearchSubcommand.Description = "Index sentences in MeiliSearch (https://www.meilisearch.com)"
+	meiliSearchSubcommand.Description = "Index sentences in MeiliSearch.\n\nhttps://www.meilisearch.com"
 
 	// Declare arguments need to provide as CLI arguments.
 	meiliSearchSubcommand.Bool(&isAPIKeyRequired, "", "api-key", "will ask you to enter the API key")
@@ -36,7 +40,7 @@ func parseCLIArguments() {
 
 	// Create the subcommand for Elasticsearch.
 	elasticsearchSubcommand := flaggy.NewSubcommand(elasticsearchName)
-	elasticsearchSubcommand.Description = "Index sentences in Elasticsearch (https://www.elastic.co/fr/elasticsearch/)"
+	elasticsearchSubcommand.Description = "Index sentences in Elasticsearch.\n\nhttps://www.elastic.co/elasticsearch/"
 
 	// Declare arguments need to provide as CLI arguments.
 	elasticsearchSubcommand.String(&hostElasticsearch, "", "host", "host url")

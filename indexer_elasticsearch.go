@@ -57,7 +57,7 @@ func (e *Elasticsearch) Init() {
 	}
 
 	// Delete the index
-	res, err := e.client.Indices.Delete([]string{"tatoeba"}, e.client.Indices.Delete.WithIgnoreUnavailable(true))
+	res, err := e.client.Indices.Delete([]string{IndexName}, e.client.Indices.Delete.WithIgnoreUnavailable(true))
 
 	if err != nil || res.IsError() {
 		log.Fatalf("Cannot delete index: %s", err)
@@ -66,7 +66,7 @@ func (e *Elasticsearch) Init() {
 	res.Body.Close()
 
 	// Re-create the index
-	res, err = e.client.Indices.Create("tatoeba")
+	res, err = e.client.Indices.Create(IndexName)
 
 	if err != nil {
 		log.Fatalf("Cannot create index: %s", err)
@@ -79,7 +79,7 @@ func (e *Elasticsearch) Init() {
 	res.Body.Close()
 
 	e.bulkIndexer, err = esutil.NewBulkIndexer(esutil.BulkIndexerConfig{
-		Index:         "tatoeba", // @TODO: Set this with a CLI variable.
+		Index:         IndexName,
 		Client:        e.client,
 		NumWorkers:    8,            // @TODO: Set this with a CLI variable.
 		FlushBytes:    int(1000000), // @TODO: Set this with a CLI variable.

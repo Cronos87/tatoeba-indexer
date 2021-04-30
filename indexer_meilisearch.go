@@ -17,9 +17,9 @@ import (
 // MeiliSearch will index the sentences
 // on a given MeiliSearch instance.
 type MeiliSearch struct {
-	client                 meilisearch.ClientInterface
-	host, APIKey, indexUID string
-	APIKeyRequired         bool
+	client         meilisearch.ClientInterface
+	host, APIKey   string
+	APIKeyRequired bool
 }
 
 // totalSentencesToIndexByRow define the total of sentences
@@ -42,9 +42,6 @@ func (m *MeiliSearch) Init() {
 		m.askAPIKey()
 	}
 
-	// Set the index name.
-	m.indexUID = "tatoeba"
-
 	// Create a MeiliSearch client.
 	m.client = meilisearch.NewClient(meilisearch.Config{
 		Host:   host,
@@ -52,7 +49,7 @@ func (m *MeiliSearch) Init() {
 	})
 
 	// Check if the index exist.
-	if _, err := m.client.Indexes().Get(m.indexUID); err != nil {
+	if _, err := m.client.Indexes().Get(IndexName); err != nil {
 		// The index doesn't exist, create it.
 		m.createIndex()
 	}
@@ -68,8 +65,8 @@ func (m *MeiliSearch) Init() {
 func (m MeiliSearch) createIndex() {
 	// Create an index if the index does not exist.
 	_, err := m.client.Indexes().Create(meilisearch.CreateIndexRequest{
-		Name: strings.Title(m.indexUID),
-		UID:  m.indexUID,
+		Name: strings.Title(IndexName),
+		UID:  IndexName,
 	})
 
 	if err != nil {
@@ -81,7 +78,7 @@ func (m MeiliSearch) createIndex() {
 func (m MeiliSearch) setSearchableAttributes() {
 	searchableAttributes := []string{"id", "language", "content", "username"}
 
-	m.client.Settings(m.indexUID).UpdateSearchableAttributes(searchableAttributes)
+	m.client.Settings(IndexName).UpdateSearchableAttributes(searchableAttributes)
 }
 
 // Index sentences to the MeiliSearch instance.
@@ -90,7 +87,7 @@ func (m MeiliSearch) Index(sentences map[string]Sentence) {
 	totalSentences := len(sentences)
 
 	// Get the index documents from the client.
-	index := m.client.Documents(m.indexUID)
+	index := m.client.Documents(IndexName)
 
 	// i represent the current index of the loop.
 	i := 1
@@ -141,7 +138,7 @@ func (m MeiliSearch) Index(sentences map[string]Sentence) {
 				time.Sleep(2 * time.Second)
 
 				// Get the update reponse.
-				response, _ := m.client.Updates(m.indexUID).Get(addResponse.UpdateID)
+				response, _ := m.client.Updates(IndexName).Get(addResponse.UpdateID)
 
 				// Continue the indexation when the last update has been processed.
 				if response.Status == meilisearch.UpdateStatusProcessed {
