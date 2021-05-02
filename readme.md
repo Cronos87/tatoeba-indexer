@@ -48,10 +48,10 @@ Elasticsearch accepts the following arguments:
 
 ## Roadmap
 
-[ ] Add tests
-[ ] Add tags
-[ ] Some sentences are not indexed on MeiliSearch, find what's happening
-[x] Adding the search engine Elasticsearch
+- [ ] Add tests
+- [ ] Add tags
+- [ ] Some sentences are not indexed on MeiliSearch, find what's happening
+- [x] Adding the search engine Elasticsearch
 
 ## Buy me a coffee
 
