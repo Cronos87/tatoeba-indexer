@@ -2,46 +2,59 @@
 
 This package can parse and index sentences from [Tatoeba](https://tatoeba.org).
 
-It only supports [MeiliSearch](https://www.meilisearch.com) as search-engine at the moment.
+## Supported Search Engines
+
+* MeiliSearch
+* Elasticsearch
 
 ## How to use
 
-You need to install and run an instance of MeiliSearch.
+You need to install and run an instance of the desired search engines.
 
-Then you need to download the archives from Tatoeba. You can use the following commands:
+### Working with MeiliSearch
 
-```bash
-wget https://downloads.tatoeba.org/exports/sentences_detailed.tar.bz2
-```
-
-```bash
-wget https://downloads.tatoeba.org/exports/links.tar.bz2
-```
-
-```bash
-wget https://downloads.tatoeba.org/exports/sentences_with_audio.tar.bz2
-```
-
-Extract the archives like this:
-
-```bash
-tar xjf sentences_detailed.tar.bz2 && tar xjf links.tar.bz2 && tar xjf sentences_with_audio.tar.bz2
-```
-
-If you have an instance of MeiliSearch running on your local, simple run:
+Run the following command to index in MeiliSearch:
 
 ```bash
 go run . meilisearch
 ```
 
-In case it's on a remote server, you can specify the host passing the parameter `--host`.
+MeiliSearch accepts the following arguments:
+
+<pre>
+   --api-key          will ask you to enter the API key
+   --host             host url (default: 127.0.0.1:7700)
+-i --index            index name (default: tatoeba)
+-d --download-files   download files needed to index Tatoeba's sentences
+</pre>
+
+### Working with Elasticsearch
+
+Run the following command to index in Elasticsearch:
+
+```bash
+go run . elasticsearch
+```
+
+Elasticsearch accepts the following arguments:
+
+<pre>
+   --host             host url (default: 127.0.0.1:9200)
+-w --workers          the number of workers. Maximum [your maximum workers available will be printed here] (default: 2)
+-b --flush-bytes      the flush threshold in bytes (default: 1000000)
+-i --index            index name (default: tatoeba)
+-d --download-files   download files needed to index Tatoeba's sentences
+</pre>
 
 ## Roadmap
 
-* Add tests
-* Add tags
-* Some sentences are not indexed on MeiliSearch, find what's happening
+[ ] Add tests
+[ ] Add tags
+[ ] Some sentences are not indexed on MeiliSearch, find what's happening
+[x] Adding the search engine Elasticsearch
 
-### New Search Engines
+## Buy me a coffee
 
-* Elasticsearch
+If you like this project, it is much appreciated :)
+
+<a href="https://www.buymeacoffee.com/cronos87" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" width="217"></a>
