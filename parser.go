@@ -12,14 +12,17 @@ import (
 
 // readCSV read Tatoeba's CSV and returns a reader.
 func readCSV(filename string) *bufio.Scanner {
+	// Create the filepath.
+	filepath := os.TempDir() + filename
+
 	// Check if the file exists.
-	if _, err := os.Stat(filename); os.IsNotExist(err) {
+	if _, err := os.Stat(filepath); os.IsNotExist(err) {
 		color.Red("\nThe file \"%s\" doesn't exist.\n", filename)
 		os.Exit(0)
 	}
 
 	// Open the sentences file.
-	file, err := os.Open(filename)
+	file, err := os.Open(filepath)
 
 	if err != nil {
 		log.Fatal(err)
@@ -32,7 +35,7 @@ func readCSV(filename string) *bufio.Scanner {
 // and returns a map of `Sentence`.
 func ParseSentences() map[string]Sentence {
 	// Open the sentences file.
-	scanner := readCSV("sentences_detailed.csv")
+	scanner := readCSV(SentencesDetailed + ".csv")
 
 	// Scan lines.
 	scanner.Split(bufio.ScanLines)
@@ -96,7 +99,7 @@ func ParseSentences() map[string]Sentence {
 // and add direct translations between sentences.
 func ParseSentencesLink(sentences *map[string]Sentence) {
 	// Open the links file.
-	scanner := readCSV("links.csv")
+	scanner := readCSV(Links + ".csv")
 
 	// Scan lines.
 	scanner.Split(bufio.ScanLines)
@@ -188,7 +191,7 @@ func FindIndirectRelations(sentences *map[string]Sentence) {
 // if the sentence id has been found in this file.
 func ParseSentencesWithAudio(sentences *map[string]Sentence) {
 	// Open the links file.
-	scanner := readCSV("sentences_with_audio.csv")
+	scanner := readCSV(SentencesWithAudio + ".csv")
 
 	// Scan lines.
 	scanner.Split(bufio.ScanLines)

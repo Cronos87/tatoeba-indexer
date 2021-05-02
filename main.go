@@ -10,6 +10,13 @@ import (
 	"github.com/integrii/flaggy"
 )
 
+// Declare the files names.
+const (
+	SentencesDetailed  = "sentences_detailed"
+	SentencesWithAudio = "sentences_with_audio"
+	Links              = "links"
+)
+
 // Declare the engines name.
 const (
 	meilisearchName   = "meilisearch"
@@ -18,6 +25,7 @@ const (
 
 // Declare CLI arguments variables and their defaults.
 var IndexName = "tatoeba"
+var needDownloadFiles = false
 
 // MeiliSearch variables.
 var isAPIKeyRequired = false
@@ -33,6 +41,7 @@ var flushBytes = 1000000
 func parseCLIArguments() {
 	// Create the global command.
 	flaggy.String(&IndexName, "i", "index", "index name")
+	flaggy.Bool(&needDownloadFiles, "d", "download-files", "download files needed to index Tatoeba's sentences")
 
 	// Create the subcommand for MeiliSearch.
 	meiliSearchSubcommand := flaggy.NewSubcommand(meilisearchName)
@@ -65,6 +74,15 @@ func parseCLIArguments() {
 	}
 }
 
+// FileExists check if a file exists and returns true if exists, false otherwise.
+func FileExists(path string) bool {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return false
+	}
+
+	return true
+}
+
 func main() {
 	// Parse CLI arguments.
 	parseCLIArguments()
@@ -72,6 +90,14 @@ func main() {
 	// If no subcommand was specified, show help and exit.
 	if len(os.Args) == 1 {
 		flaggy.ShowHelpAndExit("")
+	}
+
+	// Download files if needed.
+	if needDownloadFiles ||
+		!FileExists(os.TempDir()+SentencesDetailed+".csv") ||
+		!FileExists(os.TempDir()+Links+".csv") ||
+		!FileExists(os.TempDir()+SentencesWithAudio+".csv") {
+		DownloadFiles(needDownloadFiles)
 	}
 
 	// Declare the client.
