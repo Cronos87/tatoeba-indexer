@@ -53,6 +53,13 @@ Elasticsearch accepts the following arguments:
 - [ ] Some sentences are not indexed on MeiliSearch, find what's happening
 - [x] Adding the search engine Elasticsearch
 
+## Why this project
+
+I planned to build a desktop application with Flutter and use the index built with this project.  
+Obviously, the application will be open source on Github as well as this one. Feel free to contribute, it will be a pleasure to work with everyone :)
+
+As soon as I have a beginning of application, I will link the project repository here! Stay tuned!
+
 ## Buy me a coffee
 
 If you like this project, it is much appreciated :)
