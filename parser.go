@@ -155,11 +155,15 @@ func FindIndirectRelations(sentences *map[string]Sentence) {
 					continue
 				}
 
-				// If the sentence haven't this sentence
-				// in the indirect relations, add it.
+				// Check if the direct direct sentence is already
+				// inside the direct and indirect relations
+				for _, directRelationSentenceID := range sentence.DirectRelations {
+					if directDirectSentenceID == directRelationSentenceID {
+						continue DirectRelationLoop
+					}
+				}
+
 				for _, indirectRelationSentenceID := range sentence.IndirectRelations {
-					// If the direct direct sentence ID has been founded
-					// in the indirect relations, stop here.
 					if directDirectSentenceID == indirectRelationSentenceID {
 						continue DirectRelationLoop
 					}
