@@ -11,7 +11,7 @@ type Sentence struct {
 	DirectRelations     []int32  `json:"direct_translations"`
 	IndirectRelations   []int32  `json:"indirect_translations"`
 	TranslatedLanguages []string `json:"translated_languages"`
-	HasAudio            bool     `json:"has_audio"`
+	AudioUsername       string   `json:"audio_username"`
 }
 
 // Indexer define the methods indexers need to implement.

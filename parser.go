@@ -88,7 +88,7 @@ func ParseSentences() map[string]Sentence {
 			DirectRelations:     make([]int32, 0),
 			IndirectRelations:   make([]int32, 0),
 			TranslatedLanguages: make([]string, 0),
-			HasAudio:            false,
+			AudioUsername:       "",
 		}
 	}
 
@@ -207,7 +207,7 @@ func ParseSentencesWithAudio(sentences *map[string]Sentence) {
 
 		// Update the flag to true in the sentences map.
 		var sentence = (*sentences)[line[0]]
-		sentence.HasAudio = true
+		sentence.AudioUsername = line[1]
 		(*sentences)[line[0]] = sentence
 	}
 }
