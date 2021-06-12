@@ -18,6 +18,7 @@ func DownloadFiles(force bool) {
 		SentencesDetailed,
 		Links,
 		SentencesWithAudio,
+		Transcriptions,
 	}
 
 	// Log to the console that the files will be downloaded.

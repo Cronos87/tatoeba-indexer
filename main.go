@@ -15,6 +15,7 @@ const (
 	SentencesDetailed  = "sentences_detailed"
 	SentencesWithAudio = "sentences_with_audio"
 	Links              = "links"
+	Transcriptions     = "transcriptions"
 )
 
 // Declare the engines name.
@@ -142,6 +143,11 @@ func main() {
 	fmt.Print("Add indirect relations between sentences...")
 	FindIndirectRelations(&sentences)
 	color.Green(fmt.Sprintf("%c[2K\rIndirect relations has been added", 27))
+
+	// Add some languages transcriptions.
+	fmt.Print("Add transcriptions...")
+	ParseTranscriptions(&sentences)
+	color.Green(fmt.Sprintf("%c[2K\rTranscriptions has been added", 27))
 
 	// Index sentences.
 	client.Index(sentences)

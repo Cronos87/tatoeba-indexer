@@ -89,6 +89,7 @@ func ParseSentences() map[string]Sentence {
 			IndirectRelations:   make([]int32, 0),
 			TranslatedLanguages: make([]string, 0),
 			AudioUsername:       "",
+			Transcriptions:      make([]Transcription, 0),
 		}
 	}
 
@@ -191,8 +192,8 @@ func FindIndirectRelations(sentences *map[string]Sentence) {
 }
 
 // ParseSentencesWithAudio will parse the file `sentences_with_audio.csv`
-// and update the list of `Sentence` flagging the HasAudio property to true
-// if the sentence id has been found in this file.
+// and update the list of `Sentence` setting the `AudioUsername` property with
+// the audio recorder username if the sentence id has been found in this file.
 func ParseSentencesWithAudio(sentences *map[string]Sentence) {
 	// Open the links file.
 	scanner := readCSV(SentencesWithAudio + ".csv")
@@ -205,9 +206,37 @@ func ParseSentencesWithAudio(sentences *map[string]Sentence) {
 		// Read the current line.
 		line := strings.Split(scanner.Text(), "\t")
 
-		// Update the flag to true in the sentences map.
+		// Update the audio username in the sentences map.
 		var sentence = (*sentences)[line[0]]
 		sentence.AudioUsername = line[1]
+		(*sentences)[line[0]] = sentence
+	}
+}
+
+// ParseTranscriptions will parse the file `transcritions.csv`
+// and add transcriptions to the sentences.
+func ParseTranscriptions(sentences *map[string]Sentence) {
+	// Open the links file.
+	scanner := readCSV(Transcriptions + ".csv")
+
+	// Scan lines.
+	scanner.Split(bufio.ScanLines)
+
+	// Loop over all lines and add transcriptions.
+	for scanner.Scan() {
+		// Read the current line.
+		line := strings.Split(scanner.Text(), "\t")
+
+		// Create the transcription struct
+		transcription := Transcription{
+			ScriptName:    line[2],
+			Username:      line[3],
+			Transcription: line[4],
+		}
+
+		// Add the transcription to the sentence.
+		var sentence = (*sentences)[line[0]]
+		sentence.Transcriptions = append(sentence.Transcriptions, transcription)
 		(*sentences)[line[0]] = sentence
 	}
 }
