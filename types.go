@@ -12,7 +12,7 @@ type Sentence struct {
 	IndirectRelations   []int32         `json:"indirect_translations"`
 	TranslatedLanguages []string        `json:"translated_languages"`
 	AudioUsername       string          `json:"audio_username,omitempty"`
-	Transcriptions      []Transcription `json:"transcriptions"`
+	Transcriptions      []Transcription `json:"transcriptions,omitempty"`
 }
 
 // Transcription describes the fields used to simplify
